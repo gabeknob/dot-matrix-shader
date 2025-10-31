@@ -41,6 +41,7 @@ export function createInitialData(gl, particleSpacing) {
   const positions = [];
   const velocities = [];
   const bases = [];
+  
   for (let y = 0; y < gl.canvas.height; y += particleSpacing) {
     for (let x = 0; x < gl.canvas.width; x += particleSpacing) {
       const px = Math.min(x + Math.random() * particleSpacing / 8, gl.canvas.width);

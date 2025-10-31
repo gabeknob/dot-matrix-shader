@@ -5,14 +5,16 @@ const gl = canvas.getContext('webgl2');
 
 if (!gl) console.error("WebGL not supported! Falling back to 2D.")
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const dpr = window.devicePixelRatio || 1;
+canvas.width = window.innerWidth * dpr;
+canvas.height = window.innerHeight * dpr;
 gl.viewport(0, 0, canvas.width, canvas.height);
 
 let mouse = { x: -200, y: -200 };
 let particleCount = 0;
 
-const particleSize = 1.0;
+const particleSize = 0.9 * dpr;
+
 const particleColorHex = 0x666666ff;
 const particleColor = {
   r: ((particleColorHex >> 24) & 0xff) / 255,
@@ -21,13 +23,13 @@ const particleColor = {
   a: (particleColorHex & 0xff) / 255
 };
 
-const particleSpacing = 35;
-const waveAmplitude = 7.5;
+const particleSpacing = 35 * dpr;
+const waveAmplitude = 10;
 const waveFrequency = 0.01;
-const springFactor = 0.1;
+const springFactor = 0.09;
 const damping = 0.5;
-const repelStrength = 3;
-const repelRadius = 150;
+const repelStrength = 2.25 * dpr;
+const repelRadius = 150 * dpr;
 
 async function setupWebGL() {
   const [drawVertSource, drawFragSource, physicsVertSource, physicsFragSource] = await Promise.all([
@@ -52,7 +54,6 @@ async function setupWebGL() {
     time: gl.getUniformLocation(physicsProgram, 'u_time'),
     mouse: gl.getUniformLocation(physicsProgram, 'u_mouse'),
     repelRadius: gl.getUniformLocation(physicsProgram, 'u_repelRadius'),
-
     waveAmplitude: gl.getUniformLocation(physicsProgram, 'u_waveAmplitude'),
     waveFrequency: gl.getUniformLocation(physicsProgram, 'u_waveFrequency'),
     springFactor: gl.getUniformLocation(physicsProgram, 'u_springFactor'),
@@ -105,8 +106,8 @@ async function setupWebGL() {
     gl.useProgram(physicsProgram);
 
     gl.uniform1f(physicsLocations.time, time * 0.001);
-    gl.uniform2f(physicsLocations.mouse, mouse.x, mouse.y);
-    gl.uniform1f(physicsLocations.repelRadius, repelRadius);
+    gl.uniform2f(physicsLocations.mouse, mouse.x * dpr, mouse.y * dpr);
+    gl.uniform1f(physicsLocations.repelRadius, repelRadius * dpr);
     gl.uniform1f(physicsLocations.waveAmplitude, waveAmplitude);
     gl.uniform1f(physicsLocations.waveFrequency, waveFrequency);
     gl.uniform1f(physicsLocations.springFactor, springFactor);
@@ -135,7 +136,7 @@ async function setupWebGL() {
     gl.useProgram(drawProgram);
 
     gl.uniform2f(drawLocations.resolution, gl.canvas.width, gl.canvas.height);
-    gl.uniform1f(drawLocations.pointSize, particleSize);
+    gl.uniform1f(drawLocations.pointSize, particleSize * dpr);
     gl.uniform4f(drawLocations.color, particleColor.r, particleColor.g, particleColor.b, particleColor.a);
 
     gl.bindVertexArray(writeState.drawVao);
@@ -152,9 +153,9 @@ async function setupWebGL() {
   });
 
   window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * 2;
+    gl.viewport(0, 0, gl.canvas.width * 2, gl.canvas.height * 2);
 
     const { initialPositions, initialVelocities, basePositions } = createInitialData(gl, particleSpacing);
     particleCount = initialPositions.length / 2;
