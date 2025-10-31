@@ -1,0 +1,52 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'EB Garamond', serif;
+  color: #eee;
+  overflow: hidden;
+}
+
+#particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #111;
+  z-index: -1; 
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  z-index: 1;
+  /* pointer-events: none; */
+}
+
+.content h1 {
+  font-size: 3rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.content h2 {
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.content p {
+  font-size: 16px;
+  font-style: italic;
+  margin: 4px 0;
+  color: #aaa;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
